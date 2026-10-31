@@ -1,0 +1,412 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 909a3075be5f9654c9a09314ec65f7c2, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: Assembly-CSharp::NuclearProtection.Config.GameConfig
+  duration:
+    presetMinutes: 070000000f000000
+    customMinMinutes: 3
+    customMaxMinutes: 60
+    clockStartHour: 0
+    clockShowSeconds: 0
+  network:
+    defaultPort: 7777
+    allowedPlayerCounts: 0200000004000000
+    maxPlayers: 4
+    twoPlayerLayout: 1
+    fourPlayerLayout: 0
+    playersCanChooseTeam: 1
+    defaultPlayerName: Joueur
+    menuSceneName: Menu
+    gameSceneName: Game
+  rooms:
+    singleTeamBunkerSize: {x: 10, y: 8}
+    sharedBunkerSize: {x: 18, y: 10}
+    wallHeight: 3
+    wallThickness: 0.3
+    distanceBetweenBunkers: 200
+    radarStations:
+    - type: 0
+      localPosition: {x: 0, y: 0, z: 3}
+      yRotation: 0
+    - type: 1
+      localPosition: {x: 2.5, y: 0, z: 3}
+      yRotation: 0
+    - type: 5
+      localPosition: {x: -3.5, y: 0, z: 1}
+      yRotation: -90
+    - type: 6
+      localPosition: {x: 3.8, y: 0, z: -3.7}
+      yRotation: 180
+    - type: 7
+      localPosition: {x: -2, y: 0, z: -1}
+      yRotation: 180
+    tirStations:
+    - type: 2
+      localPosition: {x: 0, y: 0, z: 3}
+      yRotation: 0
+    - type: 3
+      localPosition: {x: -1.5, y: 0, z: 2}
+      yRotation: 0
+    - type: 4
+      localPosition: {x: 1.5, y: 0, z: 2}
+      yRotation: 0
+    - type: 5
+      localPosition: {x: -3.5, y: 0, z: 1}
+      yRotation: -90
+    - type: 6
+      localPosition: {x: 3.8, y: 0, z: -3.7}
+      yRotation: 180
+    - type: 7
+      localPosition: {x: -2, y: 0, z: -1}
+      yRotation: 180
+    nuclearLocksCenter: {x: 0, y: 0, z: -3.2}
+    defaultStationSize: {x: 0.6, y: 1.1, z: 0.4}
+    defaultStationColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
+    stationLooks:
+    - type: 0
+      size: {x: 1.6, y: 1, z: 0.8}
+      color: {r: 0.2, g: 0.7, b: 0.3, a: 1}
+    - type: 1
+      size: {x: 0.8, y: 0.9, z: 0.5}
+      color: {r: 0.8, g: 0.75, b: 0.5, a: 1}
+    - type: 2
+      size: {x: 1.6, y: 1, z: 0.8}
+      color: {r: 0.75, g: 0.3, b: 0.2, a: 1}
+    - type: 3
+      size: {x: 0.4, y: 1.1, z: 0.4}
+      color: {r: 0.9, g: 0.7, b: 0.1, a: 1}
+    - type: 4
+      size: {x: 0.4, y: 1.1, z: 0.4}
+      color: {r: 0.9, g: 0.7, b: 0.1, a: 1}
+    - type: 5
+      size: {x: 0.4, y: 1.2, z: 0.4}
+      color: {r: 0.15, g: 0.15, b: 0.15, a: 1}
+    - type: 6
+      size: {x: 0.6, y: 1.6, z: 0.3}
+      color: {r: 0.4, g: 0.45, b: 0.6, a: 1}
+    - type: 7
+      size: {x: 0.7, y: 0.9, z: 0.5}
+      color: {r: 0.35, g: 0.25, b: 0.15, a: 1}
+    - type: 8
+      size: {x: 0.4, y: 1.2, z: 0.4}
+      color: {r: 0.9, g: 0.1, b: 0.1, a: 1}
+    - type: 9
+      size: {x: 0.4, y: 1.2, z: 0.4}
+      color: {r: 0.9, g: 0.1, b: 0.1, a: 1}
+    floorColor: {r: 0.25, g: 0.25, b: 0.27, a: 1}
+    wallColor: {r: 0.45, g: 0.47, b: 0.45, a: 1}
+    ceilingColor: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+    roomLightColor: {r: 1, g: 0.95, b: 0.85, a: 1}
+    roomLightIntensity: 3
+    spawnLocalPosition: {x: 0, y: 0, z: 0}
+    spawnSpacing: 1.2
+  player:
+    walkSpeed: 3.5
+    sprintSpeed: 5.5
+    gravity: 20
+    eyeHeight: 1.65
+    mouseSensitivity: 0.12
+    maxPitch: 85
+    interactRange: 2.2
+    serverRangeTolerance: 1
+    interactFeedbackDuration: 0.25
+    moveUp: <Keyboard>/w
+    moveDown: <Keyboard>/s
+    moveLeft: <Keyboard>/a
+    moveRight: <Keyboard>/d
+    look: <Mouse>/delta
+    sprint: <Keyboard>/leftShift
+    interact: <Keyboard>/e
+    toggleCursor: <Keyboard>/escape
+  aircraft:
+    firstAircraftDelay: 8
+    spawnIntervalMin: 10
+    spawnIntervalMax: 25
+    friendlyRatio: 0.4
+    timeToReachBase: 45
+    approachAngleMin: 0
+    approachAngleMax: 360
+    enemyMissileChance: 0.25
+    missileFireAtMin: 0.3
+    missileFireAtMax: 0.6
+    enemyMissileFlightTime: 20
+    radarRangeKm: 120
+    registryExtraCodes: 15
+    registryAllowSearch: 1
+    idCodeLength: 4
+    idLetters: ABCDEFGHJKLMNPQRSTUVWXYZ
+    idDigits: 23456789
+  fire:
+    fireLetters: ABCDEFGHJKLMNPQRSTUVWXYZ
+    fireDigits: 23456789
+    penaltyMode: 0
+    wrongCodeCooldown: 5
+    maxConsecutiveErrors: 3
+    errorLimitLockout: 20
+    missileFlightTime: 4
+    keyTurnedColor: {r: 0.2, g: 1, b: 0.3, a: 1}
+  keys:
+    keysPerBriefcase: 2
+    personalKeysToOpen: 2
+    briefcaseOpenTolerance: 2
+    briefcaseOpenColor: {r: 0.3, g: 0.9, b: 1, a: 1}
+    conventionalKeyTimeout: 0
+    nuclearSimultaneityTolerance: 1
+    nuclearLockDistance: 3.6
+    bunkerVoteWindow: 30
+    nuclearVoteColor: {r: 1, g: 0.2, b: 0.2, a: 1}
+  phone:
+    ringTimeout: 12
+    gameMessageDuration: 10
+    deadLineSound: 1
+    teamCallRing:
+      clipOverride: {fileID: 0}
+      freqA: 440
+      freqB: 480
+      onTime: 0.4
+      gapTime: 0.2
+      bursts: 2
+      offTime: 2
+      volume: 0.5
+    nuclearOrderRing:
+      clipOverride: {fileID: 0}
+      freqA: 880
+      freqB: 0
+      onTime: 0.15
+      gapTime: 0.1
+      bursts: 4
+      offTime: 1
+      volume: 0.6
+    sanctionRing:
+      clipOverride: {fileID: 0}
+      freqA: 330
+      freqB: 0
+      onTime: 1
+      gapTime: 0
+      bursts: 1
+      offTime: 1.5
+      volume: 0.5
+    ringMaxDistance: 15
+    dialTone:
+      clipOverride: {fileID: 0}
+      freqA: 350
+      freqB: 440
+      onTime: 1
+      gapTime: 0
+      bursts: 1
+      offTime: 0
+      volume: 0.25
+    ringbackTone:
+      clipOverride: {fileID: 0}
+      freqA: 440
+      freqB: 480
+      onTime: 1
+      gapTime: 0
+      bursts: 1
+      offTime: 3
+      volume: 0.25
+    busyTone:
+      clipOverride: {fileID: 0}
+      freqA: 480
+      freqB: 620
+      onTime: 0.5
+      gapTime: 0
+      bursts: 1
+      offTime: 0.5
+      volume: 0.25
+    deadLineBeep:
+      clipOverride: {fileID: 0}
+      freqA: 1000
+      freqB: 0
+      onTime: 0.08
+      gapTime: 0
+      bursts: 1
+      offTime: 4
+      volume: 0.12
+    callWaitingBeep:
+      clipOverride: {fileID: 0}
+      freqA: 440
+      freqB: 0
+      onTime: 0.2
+      gapTime: 0.2
+      bursts: 2
+      offTime: 3
+      volume: 0.3
+  calls:
+    intervalMin: 120
+    intervalMax: 240
+    forceCallAfter: 300
+    startGracePeriod: 30
+    referenceDurationMinutes: 15
+    intervalScaleByDurationRatio:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0.3
+        value: 0.5
+        inSlope: 0
+        outSlope: 0.4705882
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 2
+        value: 1.3
+        inSlope: 0.4705882
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    minNuclearOrdersByMinutes:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 7
+        value: 2
+        inSlope: 0
+        outSlope: 0.25
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 15
+        value: 4
+        inSlope: 0.25
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    trueOrderRatio: 0.5
+    trueOrderSecondCallMin: 3
+    trueOrderSecondCallMax: 15
+    trueOrderLaunchDeadline: 60
+    sanctionStaggerMin: 2
+    sanctionStaggerMax: 8
+    sanctionDelayAfterKill: 3
+    orderMessage: "Ici le commandement. Ordre de lancement nucl\xE9aire. Je r\xE9p\xE8te
+      : ordre de lancement nucl\xE9aire."
+    sanctionMessage: "Ici le commandement. Vous avez abattu l'avion ami {0}. Ce sera
+      not\xE9 dans votre dossier."
+  fuse:
+    loadPerContact: 1
+    loadPerGameCall: 2
+    overloadThreshold: 5
+    overloadSustain: 6
+    overloadBlowChance: 0.6
+    underloadThreshold: 1
+    underloadSustain: 30
+    underloadBlowChance: 0.5
+    firstBlackoutNotBefore: 60
+    minTimeBetweenBlackouts: 90
+    noBlackoutInLastSeconds: 30
+    allowSimultaneousBlackouts: 0
+    noNuclearOrderAfterBlackout: 20
+    blackoutOrderRatePerMinute: 1
+    emergencyLightColor: {r: 1, g: 0.08, b: 0.05, a: 1}
+    emergencyLightIntensity: 2
+    emergencyLightPulse: 0.7
+    unpoweredStationColor: {r: 0.08, g: 0.08, b: 0.09, a: 1}
+    blownFuseColor: {r: 1, g: 0.2, b: 0.1, a: 1}
+    ambienceMaxDistance: 14
+    humSound:
+      clipOverride: {fileID: 0}
+      freqA: 60
+      freqB: 120
+      onTime: 1
+      gapTime: 0
+      bursts: 1
+      offTime: 0
+      volume: 0.08
+    alarmSound:
+      clipOverride: {fileID: 0}
+      freqA: 700
+      freqB: 0
+      onTime: 0.35
+      gapTime: 0.15
+      bursts: 2
+      offTime: 0.6
+      volume: 0.35
+    needleSpeed: 240
+    needleGreenZone: 30
+    needleSuccessesRequired: 3
+    wireCount: 4
+    wireMistakeResets: 1
+    wireColors:
+    - {r: 0.9, g: 0.15, b: 0.15, a: 1}
+    - {r: 0.2, g: 0.4, b: 1, a: 1}
+    - {r: 1, g: 0.85, b: 0.1, a: 1}
+    - {r: 0.2, g: 0.8, b: 0.25, a: 1}
+    - {r: 1, g: 1, b: 1, a: 1}
+    - {r: 0.7, g: 0.3, b: 0.9, a: 1}
+    - {r: 1, g: 0.55, b: 0.1, a: 1}
+    - {r: 0.45, g: 0.3, b: 0.15, a: 1}
+  defeat:
+    enemiesPassedLimit: 4
+    friendliesDownedLimit: 4
+    missedTrueOrdersLimit: 2
+    falseLaunchIsInstantDefeat: 1
+    shakeDuration: 1.2
+    shakeFirstAmplitude: 0.8
+    shakeAmplitudePerImpact: 0.9
+    shakeFrequency: 18
+    boomFirstVolume: 0.35
+    boomVolumePerImpact: 0.2
+    boomDuration: 2.5
+    boomClipOverride: {fileID: 0}
+    victoryTitle: VICTOIRE
+    victoryText: "L'horloge est arriv\xE9e au bout : vous avez tenu."
+    defeatTitle: "D\xC9FAITE"
+    reasonEnemies: "Trop d'ennemis ont frapp\xE9 la base."
+    reasonFriendlies: "Trop d'avions amis abattus : vous \xEAtes relev\xE9s de vos
+      fonctions."
+    reasonMissedOrders: "Vous n'avez pas ex\xE9cut\xE9 un vrai ordre de lancement."
+    reasonFalseLaunch: "Lancement nucl\xE9aire sans ordre valide."
+  score:
+    pointsPerEnemyDowned: 100
+    pointsPerTrueOrderLaunched: 300
+    pointsPerFalseOrderIgnored: 200
+    penaltyPerEnemyPassed: 150
+    penaltyPerFriendlyDowned: 200
+    penaltyPerMissedCall: 25
+    penaltyPerMissedTrueOrder: 300
+    penaltyPerFalseLaunch: 1000
+    minPercentS: 90
+    minPercentA: 75
+    minPercentB: 55
+    minPercentC: 40
+    minPercentD: 20
+    sRequiresNoMistake: 1
+    defeatAlwaysF: 1
+  director:
+    maxConsecutiveFalseOrders: 2
+    maxConsecutiveTrueOrders: 2
+    maxSameTeamCalledFirst: 2
+    maxSimultaneousEnemies: 4
+    maxConsecutiveSameSide: 4
+    spawnRetryDelay: 2
+  display:
+    toggleFullscreen: <Keyboard>/f11
+    referenceHeight: 720
+    uiScaleAtReference: 1.5
+    minUiScale: 1
+    toastDuration: 4
