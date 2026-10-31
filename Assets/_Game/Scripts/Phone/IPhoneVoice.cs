@@ -1,8 +1,8 @@
 namespace NuclearProtection.Phone
 {
     /// <summary>
-    /// Voix du téléphone entre les deux bunkers. Le service vocal réel (Vivox, Discord…)
-    /// n'est pas encore choisi : seule l'implémentation factice existe.
+    /// Voix du téléphone entre les deux bunkers : VivoxPhoneVoice (vraie voix) ou FakePhoneVoice
+    /// (aucun son, tests hors ligne), au choix dans PhoneSettings.voiceBackend.
     /// </summary>
     public interface IPhoneVoice
     {

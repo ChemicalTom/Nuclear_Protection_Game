@@ -14,7 +14,7 @@ namespace NuclearProtection.Config
         public float yRotation;
     }
 
-    /// <summary>Apparence graybox d'un type de poste.</summary>
+    /// <summary>Apparence d'un type de poste : taille de la zone d'interaction et couleur d'état (écran, porte, plaque…).</summary>
     [Serializable]
     public struct StationLook
     {
@@ -66,14 +66,14 @@ namespace NuclearProtection.Config
         [Tooltip("Centre du segment entre les 2 serrures, dans l'espace de l'équipe.")]
         public Vector3 nuclearLocksCenter = new(0f, 0f, -3.2f);
 
-        [Header("Apparence graybox des postes")]
+        [Header("Apparence des postes")]
         public Vector3 defaultStationSize = new(0.6f, 1.1f, 0.4f);
         public Color defaultStationColor = new(0.6f, 0.6f, 0.6f);
         public StationLook[] stationLooks =
         {
             new() { type = StationType.Radar,       size = new Vector3(1.6f, 1.0f, 0.8f), color = new Color(0.2f, 0.7f, 0.3f) },
             new() { type = StationType.Registre,    size = new Vector3(0.8f, 0.9f, 0.5f), color = new Color(0.8f, 0.75f, 0.5f) },
-            new() { type = StationType.PupitreTir,  size = new Vector3(1.6f, 1.0f, 0.8f), color = new Color(0.75f, 0.3f, 0.2f) },
+            new() { type = StationType.PupitreTir,  size = new Vector3(1.6f, 1.0f, 0.8f), color = new Color(1f, 0.55f, 0.1f) }, // écran ambre
             new() { type = StationType.CleConv1,    size = new Vector3(0.4f, 1.1f, 0.4f), color = new Color(0.9f, 0.7f, 0.1f) },
             new() { type = StationType.CleConv2,    size = new Vector3(0.4f, 1.1f, 0.4f), color = new Color(0.9f, 0.7f, 0.1f) },
             new() { type = StationType.Telephone,   size = new Vector3(0.4f, 1.2f, 0.4f), color = new Color(0.15f, 0.15f, 0.15f) },
@@ -82,11 +82,6 @@ namespace NuclearProtection.Config
             new() { type = StationType.SerrureNucA, size = new Vector3(0.4f, 1.2f, 0.4f), color = new Color(0.9f, 0.1f, 0.1f) },
             new() { type = StationType.SerrureNucB, size = new Vector3(0.4f, 1.2f, 0.4f), color = new Color(0.9f, 0.1f, 0.1f) },
         };
-
-        [Header("Couleurs des murs")]
-        public Color floorColor = new(0.25f, 0.25f, 0.27f);
-        public Color wallColor = new(0.45f, 0.47f, 0.45f);
-        public Color ceilingColor = new(0.3f, 0.3f, 0.3f);
 
         [Header("Éclairage normal")]
         public Color roomLightColor = new(1f, 0.95f, 0.85f);

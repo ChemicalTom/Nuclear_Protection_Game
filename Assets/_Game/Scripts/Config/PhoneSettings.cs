@@ -17,6 +17,12 @@ namespace NuclearProtection.Config
         [Tooltip("Ce qu'entend l'équipe valide en appelant l'équipe en panne.")]
         public DeadLineSound deadLineSound = DeadLineSound.BipDiscret;
 
+        [Header("Voix (communication entre bunkers)")]
+        [Tooltip("Vivox = vraie voix (Unity Gaming Services, Internet). Factice = aucun son (tests hors ligne).")]
+        public PhoneVoiceBackend voiceBackend = PhoneVoiceBackend.Vivox;
+        [Tooltip("Préfixe du canal vocal ; l'identifiant unique de la partie est ajouté derrière.")]
+        public string voiceChannelPrefix = "np";
+
         [Header("Sonneries (entendues dans le bunker, autour du téléphone)")]
         public PhoneTone teamCallRing = new() { freqA = 440f, freqB = 480f, onTime = 0.4f, gapTime = 0.2f, bursts = 2, offTime = 2f, volume = 0.5f };
         public PhoneTone nuclearOrderRing = new() { freqA = 880f, freqB = 0f, onTime = 0.15f, gapTime = 0.1f, bursts = 4, offTime = 1f, volume = 0.6f };

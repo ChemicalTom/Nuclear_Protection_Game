@@ -22,6 +22,9 @@ namespace NuclearProtection.Network
         public readonly NetworkVariable<bool> HasStarted = new();
         public readonly NetworkVariable<BunkerLayout> Layout = new();
 
+        /// <summary>Identifiant unique de cette partie (canal vocal propre, même si deux groupes jouent la même seed).</summary>
+        public readonly NetworkVariable<FixedString64Bytes> SessionId = new();
+
         private GameConfig Config => ConnectionManager.Instance.Config;
 
         private void Awake() => Players = new NetworkList<LobbyPlayer>();
@@ -43,6 +46,7 @@ namespace NuclearProtection.Network
 
             DurationMinutes.Value = _initDuration;
             Seed.Value = _initSeed;
+            SessionId.Value = System.Guid.NewGuid().ToString("N");
 
             NetworkManager.OnClientConnectedCallback += AddPlayer;
             NetworkManager.OnClientDisconnectCallback += RemovePlayer;

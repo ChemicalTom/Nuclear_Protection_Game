@@ -91,6 +91,7 @@ namespace NuclearProtection.UI.Panels
             if (line.Mode == PhoneMode.Communication && PhoneVoiceDriver.Instance != null)
             {
                 var voice = PhoneVoiceDriver.Instance;
+                if (voice.Status != null) GUILayout.Label($"<i>{voice.Status}</i>");
                 if (GUILayout.Button(voice.Voice.IsMuted ? "Rouvrir le micro" : "Couper le micro", GUILayout.Width(150), GUILayout.Height(30)))
                     voice.ToggleMute();
             }

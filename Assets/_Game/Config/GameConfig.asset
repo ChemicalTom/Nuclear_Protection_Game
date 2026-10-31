@@ -81,7 +81,7 @@ MonoBehaviour:
       color: {r: 0.8, g: 0.75, b: 0.5, a: 1}
     - type: 2
       size: {x: 1.6, y: 1, z: 0.8}
-      color: {r: 0.75, g: 0.3, b: 0.2, a: 1}
+      color: {r: 1, g: 0.55, b: 0.1, a: 1}
     - type: 3
       size: {x: 0.4, y: 1.1, z: 0.4}
       color: {r: 0.9, g: 0.7, b: 0.1, a: 1}
@@ -103,9 +103,6 @@ MonoBehaviour:
     - type: 9
       size: {x: 0.4, y: 1.2, z: 0.4}
       color: {r: 0.9, g: 0.1, b: 0.1, a: 1}
-    floorColor: {r: 0.25, g: 0.25, b: 0.27, a: 1}
-    wallColor: {r: 0.45, g: 0.47, b: 0.45, a: 1}
-    ceilingColor: {r: 0.3, g: 0.3, b: 0.3, a: 1}
     roomLightColor: {r: 1, g: 0.95, b: 0.85, a: 1}
     roomLightIntensity: 3
     spawnLocalPosition: {x: 0, y: 0, z: 0}
@@ -169,6 +166,8 @@ MonoBehaviour:
     ringTimeout: 12
     gameMessageDuration: 10
     deadLineSound: 1
+    voiceBackend: 1
+    voiceChannelPrefix: np
     teamCallRing:
       clipOverride: {fileID: 0}
       freqA: 440
@@ -410,3 +409,35 @@ MonoBehaviour:
     uiScaleAtReference: 1.5
     minUiScale: 1
     toastDuration: 4
+  visuals:
+    buildDecor: 1
+    concreteColor: {r: 0.62, g: 0.6, b: 0.55, a: 1}
+    wainscotColor: {r: 0.24, g: 0.32, b: 0.27, a: 1}
+    wainscotHeight: 1.1
+    floorColor: {r: 0.33, g: 0.34, b: 0.33, a: 1}
+    floorTileSize: 1
+    ceilingColor: {r: 0.42, g: 0.42, b: 0.4, a: 1}
+    concreteNoise: 0.35
+    paintedMetalColor: {r: 0.33, g: 0.4, b: 0.34, a: 1}
+    darkMetalColor: {r: 0.14, g: 0.15, b: 0.16, a: 1}
+    brushedMetalColor: {r: 0.6, g: 0.6, b: 0.58, a: 1}
+    redPaintColor: {r: 0.55, g: 0.08, b: 0.06, a: 1}
+    hazardYellow: {r: 0.95, g: 0.75, b: 0.05, a: 1}
+    hazardBlack: {r: 0.08, g: 0.08, b: 0.08, a: 1}
+    pipeColor: {r: 0.36, g: 0.3, b: 0.24, a: 1}
+    screenGlow: 1.6
+    neonColor: {r: 0.9, g: 0.95, b: 1, a: 1}
+    neonGlow: 2.5
+    lampGlow: 3
+    roomLightShadows: 1
+    ambientColor: {r: 0.34, g: 0.35, b: 0.33, a: 1}
+    roomLightBoost: 2.5
+    postProcessing: 1
+    bloomIntensity: 0.9
+    bloomThreshold: 0.95
+    vignette: 0.3
+    filmGrain: 0.25
+    saturation: -15
+    contrast: 12
+    fogDensity: 0.02
+    fogColor: {r: 0.12, g: 0.13, b: 0.12, a: 1}

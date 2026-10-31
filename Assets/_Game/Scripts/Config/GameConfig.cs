@@ -23,6 +23,7 @@ namespace NuclearProtection.Config
         public ScoreSettings score = new();
         public DirectorSettings director = new();
         public DisplaySettings display = new();
+        public VisualSettings visuals = new();
 
         // Appelé par Unity à chaque modification dans l'Inspector.
         private void OnValidate() => Sanitize();

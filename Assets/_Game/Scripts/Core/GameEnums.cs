@@ -32,6 +32,13 @@ namespace NuclearProtection.Core
         BipDiscret = 1
     }
 
+    /// <summary>Service vocal utilisé pour le téléphone entre bunkers.</summary>
+    public enum PhoneVoiceBackend
+    {
+        Factice = 0,
+        Vivox = 1
+    }
+
     /// <summary>Types de postes interactifs placés dans les bunkers.</summary>
     public enum StationType
     {

@@ -20,11 +20,17 @@ namespace NuclearProtection.Rooms
         private Renderer _renderer;
         private Color _baseColor;
         private float _flashUntil;
+        private float _glow;
 
-        public void Init(StationInfo info, Color color)
+        /// <summary>
+        /// indicator = pièce du modèle qui affiche l'état (écran, porte…), sinon le rendu du poste lui-même.
+        /// glow > 0 : la pièce est lumineuse (écran CRT), son émission suit la couleur d'état.
+        /// </summary>
+        public void Init(StationInfo info, Color color, Renderer indicator = null, float glow = 0f)
         {
             Info = info;
-            _renderer = GetComponent<Renderer>();
+            _renderer = indicator != null ? indicator : GetComponent<Renderer>();
+            _glow = glow;
             _baseColor = color;
             SetColor(color);
         }
@@ -68,7 +74,11 @@ namespace NuclearProtection.Rooms
 
         private void SetColor(Color c)
         {
-            if (_renderer != null) _renderer.material.color = c;
+            if (_renderer == null) return;
+            if (_glow <= 0f) { _renderer.material.color = c; return; }
+            // Écran : verre sombre teinté, la couleur d'état vient surtout de la lueur.
+            _renderer.material.color = c * 0.15f;
+            Visuals.MaterialKit.SetGlow(_renderer.material, c, _glow);
         }
     }
 }

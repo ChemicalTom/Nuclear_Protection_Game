@@ -32,8 +32,9 @@ namespace NuclearProtection.Fuse
             a._team = team;
             a._config = config;
             float range = Mathf.Max(size.x, size.y) * 1.2f;
-            a._normal = a.CreateLight("LumiereNormale", config.rooms.roomLightColor, config.rooms.roomLightIntensity, range);
+            a._normal = a.CreateLight("LumiereNormale", config.rooms.roomLightColor, config.rooms.roomLightIntensity * config.visuals.roomLightBoost, range);
             a._emergency = a.CreateLight("LumiereUrgence", config.fuse.emergencyLightColor, config.fuse.emergencyLightIntensity, range);
+            if (config.visuals.roomLightShadows) a._normal.shadows = a._emergency.shadows = LightShadows.Soft;
             a._hum = a.CreateSource("Bourdonnement");
             a._alarm = a.CreateSource("Alarme");
             return a;

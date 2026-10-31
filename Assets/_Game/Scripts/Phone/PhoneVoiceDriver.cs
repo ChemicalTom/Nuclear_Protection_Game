@@ -1,4 +1,5 @@
 using NuclearProtection.Core;
+using NuclearProtection.Network;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -10,14 +11,34 @@ namespace NuclearProtection.Phone
     /// </summary>
     public class PhoneVoiceDriver : MonoBehaviour
     {
-        private const string LineId = "ligne-inter-bunkers";
-
         public static PhoneVoiceDriver Instance { get; private set; }
 
-        /// <summary>Implémentation utilisée (factice tant qu'aucun service vocal n'est choisi).</summary>
-        public IPhoneVoice Voice { get; } = new FakePhoneVoice();
+        /// <summary>Implémentation utilisée (choisie dans la config : Vivox ou factice).</summary>
+        public IPhoneVoice Voice { get; private set; }
 
-        private void Awake() => Instance = this;
+        /// <summary>Message à afficher sur l'écran du téléphone (connexion en cours, voix indisponible…).</summary>
+        public string Status => Voice is VivoxPhoneVoice vivox ? vivox.Status : null;
+
+        private void Awake()
+        {
+            Instance = this;
+            var phone = ConnectionManager.Instance.Config.phone;
+            Voice = phone.voiceBackend == PhoneVoiceBackend.Vivox ? new VivoxPhoneVoice(LocalPlayerName()) : new FakePhoneVoice();
+        }
+
+        // Canal propre à la partie : préfixe + identifiant unique tiré par l'hôte.
+        private static string LineId() =>
+            $"{ConnectionManager.Instance.Config.phone.voiceChannelPrefix}_{MatchSession.Instance.SessionId.Value}";
+
+        private static string LocalPlayerName()
+        {
+            var session = MatchSession.Instance;
+            if (session == null) return "Joueur";
+            ulong me = NetworkManager.Singleton.LocalClientId;
+            foreach (var p in session.Players)
+                if (p.ClientId == me) return p.Name.ToString();
+            return "Joueur";
+        }
 
         private void OnDestroy()
         {
@@ -28,7 +49,7 @@ namespace NuclearProtection.Phone
         private void Update()
         {
             bool shouldBeOpen = LocalIsInCall();
-            if (shouldBeOpen && !Voice.IsLineOpen) Voice.Connect(LineId);
+            if (shouldBeOpen && !Voice.IsLineOpen) Voice.Connect(LineId());
             else if (!shouldBeOpen && Voice.IsLineOpen) Voice.Disconnect();
         }
 
