@@ -20,6 +20,8 @@ namespace NuclearProtection.Config
         [Header("Voix (communication entre bunkers)")]
         [Tooltip("Vivox = vraie voix (Unity Gaming Services, Internet). Factice = aucun son (tests hors ligne).")]
         public PhoneVoiceBackend voiceBackend = PhoneVoiceBackend.Vivox;
+        [Tooltip("Voix dans le bunker : les joueurs d'un même bunker s'entendent (jamais ceux de l'autre bunker).")]
+        public bool bunkerVoiceChat = true;
         [Tooltip("Préfixe du canal vocal ; l'identifiant unique de la partie est ajouté derrière.")]
         public string voiceChannelPrefix = "np";
 

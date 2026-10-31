@@ -15,7 +15,8 @@ namespace NuclearProtection.Rooms.Visuals
             Wainscot(root, w, d, v.wainscotHeight);
             Neons(root, w, d, h);
             Pipes(root, w, d, h);
-            BlastDoor(root, w);
+            BlastDoor(root, w, 1f);  // mur est
+            BlastDoor(root, w, -1f); // mur ouest : une porte de chaque côté
             Sign(root, d, h);
             if (shared) // bunker commun : ligne jaune au sol entre l'espace Radar et l'espace Tir
                 Shapes.Box(root, "LigneCentrale", new Vector3(0, 0.004f, 0), new Vector3(0.12f, 0.008f, d), MaterialKit.Get(Mat.Hazard));
@@ -68,13 +69,13 @@ namespace NuclearProtection.Rooms.Visuals
             Shapes.Box(root, "Cables", new Vector3(0, h - 0.25f, -d / 2f + 0.2f), new Vector3(w, 0.05f, 0.18f), MaterialKit.Get(Mat.DarkMetal));
         }
 
-        // Porte blindée ronde (scellée : les bunkers sont isolés) sur le mur est.
-        private static void BlastDoor(Transform root, float w)
+        // Porte blindée ronde (scellée : les bunkers sont isolés) ; side = +1 mur est, -1 mur ouest.
+        private static void BlastDoor(Transform root, float w, float side)
         {
-            var door = new GameObject("PorteBlindee").transform;
+            var door = new GameObject(side > 0f ? "PorteBlindee_Est" : "PorteBlindee_Ouest").transform;
             door.SetParent(root, false);
-            door.localPosition = new Vector3(w / 2f - 0.05f, 1.2f, 0);
-            door.localRotation = Quaternion.Euler(0, 90f, 0); // -Z local = vers l'intérieur du bunker
+            door.localPosition = new Vector3(side * (w / 2f - 0.05f), 1.2f, 0);
+            door.localRotation = Quaternion.Euler(0, side * 90f, 0); // -Z local = vers l'intérieur du bunker
             Shapes.Cylinder(door, "Cadre", Vector3.zero, 2.3f, 0.12f, MaterialKit.Get(Mat.DarkMetal), new Vector3(90f, 0, 0));
             Shapes.Cylinder(door, "Battant", new Vector3(0, 0, -0.08f), 2f, 0.12f, MaterialKit.Get(Mat.PaintedMetal), new Vector3(90f, 0, 0));
             Shapes.Cylinder(door, "Moyeu", new Vector3(0, 0, -0.2f), 0.2f, 0.15f, MaterialKit.Get(Mat.BrushedMetal), new Vector3(90f, 0, 0));

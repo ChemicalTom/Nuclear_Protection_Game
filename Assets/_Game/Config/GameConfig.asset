@@ -167,6 +167,7 @@ MonoBehaviour:
     gameMessageDuration: 10
     deadLineSound: 1
     voiceBackend: 1
+    bunkerVoiceChat: 1
     voiceChannelPrefix: np
     teamCallRing:
       clipOverride: {fileID: 0}

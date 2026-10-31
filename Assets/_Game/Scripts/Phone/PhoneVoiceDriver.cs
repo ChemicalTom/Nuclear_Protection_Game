@@ -30,7 +30,8 @@ namespace NuclearProtection.Phone
         private static string LineId() =>
             $"{ConnectionManager.Instance.Config.phone.voiceChannelPrefix}_{MatchSession.Instance.SessionId.Value}";
 
-        private static string LocalPlayerName()
+        /// <summary>Nom du joueur local (affiché par Vivox).</summary>
+        public static string LocalPlayerName()
         {
             var session = MatchSession.Instance;
             if (session == null) return "Joueur";

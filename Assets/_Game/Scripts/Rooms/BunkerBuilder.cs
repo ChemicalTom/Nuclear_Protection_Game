@@ -3,6 +3,7 @@ using NuclearProtection.Config;
 using NuclearProtection.Core;
 using NuclearProtection.Fuse;
 using NuclearProtection.Network;
+using NuclearProtection.Phone;
 using NuclearProtection.Rooms.Visuals;
 using UnityEngine;
 
@@ -35,6 +36,7 @@ namespace NuclearProtection.Rooms
             // Lumière, bourdonnement et panne : par équipe (dans le bunker commun, chaque moitié a les siens).
             foreach (var team in new[] { TeamId.Radar, TeamId.Tir })
                 TeamAmbience.Create(transform, team, CurrentPlan.TeamOrigin(team), CurrentPlan.TeamSpaceSize(team), config);
+            BunkerVoice.Create(transform, CurrentPlan, config);
             Built?.Invoke(CurrentPlan);
         }
 
