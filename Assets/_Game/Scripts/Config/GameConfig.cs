@@ -25,6 +25,7 @@ namespace NuclearProtection.Config
         public DisplaySettings display = new();
         public VisualSettings visuals = new();
         public UiSettings ui = new();
+        public AvatarSettings avatar = new();
 
         // Appelé par Unity à chaque modification dans l'Inspector.
         private void OnValidate() => Sanitize();

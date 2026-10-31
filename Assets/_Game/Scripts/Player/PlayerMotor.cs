@@ -32,10 +32,10 @@ namespace NuclearProtection.Player
             _s = ConnectionManager.Instance.Config.player;
             _cc = GetComponent<CharacterController>();
             head.localPosition = new Vector3(0f, _s.eyeHeight, 0f);
+            PlayerAvatar.Attach(gameObject, body, OwnerClientId, IsOwner, ConnectionManager.Instance.Config.avatar);
             if (!IsOwner) return;
 
             Controls = new PlayerControls(_s);
-            body.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
 
             // On récupère la caméra de la scène et on la fixe sur notre tête.
             _cam = Camera.main;
