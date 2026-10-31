@@ -77,10 +77,10 @@ namespace NuclearProtection.UI.Panels
             }
 
             if (line.Waiting != CallKind.Aucun)
-                GUILayout.Label("<color=#ffcc20><b>Double appel ! Raccrochez pour le prendre.</b></color>", big);
+                GUILayout.Label(UiTheme.Warn("<b>Double appel ! Raccrochez pour le prendre.</b>"), big);
 
             if (phones.OtherLineRinging(team))
-                GUILayout.Label("<color=#ffcc20><b>L'autre ligne sonne ! Raccrochez pour la prendre.</b></color>", big);
+                GUILayout.Label(UiTheme.Warn("<b>L'autre ligne sonne ! Raccrochez pour la prendre.</b>"), big);
 
             if (line.Info.Length > 0) GUILayout.Label(line.Info.ToString(), big);
             if (line.Mode is PhoneMode.Tonalite or PhoneMode.Occupe && !PhoneSystem.SharedPhone)

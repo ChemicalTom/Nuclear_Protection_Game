@@ -66,6 +66,7 @@ namespace NuclearProtection.Rooms
 
             // Horloge murale sur le mur nord, lisible depuis l'intérieur.
             var clock = TextLabel.Create(root, "HorlogeMurale", "00:00", 0.12f);
+            clock.color = config.ui.accent;
             clock.transform.localPosition = new Vector3(0, h - 0.6f, d / 2 - 0.02f);
             clock.gameObject.AddComponent<WallClockDisplay>();
         }
@@ -87,7 +88,8 @@ namespace NuclearProtection.Rooms
             station.Init(info, color, indicator, screen ? config.visuals.screenGlow : 0f);
             StationRegistry.Register(station);
 
-            var label = TextLabel.Create(transform, $"Etiquette_{info.Id}", info.Type.ToString(), 0.035f);
+            var label = TextLabel.Create(transform, $"Etiquette_{info.Id}", config.ui.LabelFor(info.Type), config.ui.worldLabelSize);
+            label.color = config.ui.worldLabelColor;
             label.transform.position = info.Position + Vector3.up * (size.y + 0.25f);
             label.gameObject.AddComponent<LabelBillboard>();
         }

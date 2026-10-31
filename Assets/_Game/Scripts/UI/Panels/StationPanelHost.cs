@@ -11,9 +11,6 @@ namespace NuclearProtection.UI.Panels
     /// </summary>
     public class StationPanelHost : MonoBehaviour
     {
-        [Tooltip("Fond opaque de l'écran (sinon les étiquettes 3D de la pièce se voient au travers).")]
-        [SerializeField] private Color backgroundColor = new(0.1f, 0.11f, 0.13f, 1f);
-
         public static StationPanelHost Instance { get; private set; }
         public static bool IsOpen => Instance != null && Instance._current != null;
 
@@ -71,19 +68,17 @@ namespace NuclearProtection.UI.Panels
         private void OnGUI()
         {
             if (_current == null) return;
-            GUI.matrix = Matrix4x4.Scale(Vector3.one * DisplayControl.UiScale);
-            float w = Screen.width / DisplayControl.UiScale, h = Screen.height / DisplayControl.UiScale;
-            var frame = new Rect(w * 0.1f, h * 0.08f, w * 0.8f, h * 0.84f);
+            UiTheme.Begin();
+            var size = UiTheme.Size;
+            // Sous la plaque de l'horloge du HUD.
+            float top = 56f;
+            var frame = new Rect(size.x * 0.08f, top, size.x * 0.84f, size.y - top - 12f);
 
-            var old = GUI.color;
-            GUI.color = backgroundColor;
-            GUI.DrawTexture(frame, Texture2D.whiteTexture);
-            GUI.color = old;
-            GUI.Box(frame, $"{_current.Title} — {_station.Team}");
-            if (GUI.Button(new Rect(frame.xMax - 126, frame.y + 4, 120, 24), "Fermer (Échap)")) { Close(); return; }
-            var content = new Rect(frame.x + 10, frame.y + 34, frame.width - 20, frame.height - 44);
+            // Panneau opaque (sinon les étiquettes 3D de la pièce se voient au travers).
+            var content = UiTheme.Panel(frame, $"{_current.Title.ToUpperInvariant()}  —  {UiTheme.Dim("ÉQUIPE " + _station.Team.ToString().ToUpperInvariant())}");
+            if (GUI.Button(new Rect(frame.xMax - 136, frame.y + 3, 132, 26), "Fermer [Échap]")) { Close(); return; }
             if (IsUnpowered(_station))
-                GUI.Label(content, "<color=#803030><size=22>Écran éteint. Plus de courant.</size></color>", new GUIStyle(GUI.skin.label) { richText = true, alignment = TextAnchor.MiddleCenter });
+                GUI.Label(content, UiTheme.Bad("ÉCRAN ÉTEINT — PLUS DE COURANT"), new GUIStyle(UiTheme.Big) { alignment = TextAnchor.MiddleCenter });
             else _current.Draw(content);
         }
     }

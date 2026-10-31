@@ -5,11 +5,12 @@ using UnityEngine;
 namespace NuclearProtection.UI
 {
     /// <summary>
-    /// Menu principal graybox (IMGUI) : Héberger (port, durée, seed optionnelle) ou Rejoindre (IP + port).
+    /// Menu principal (IMGUI, thème terminal) : identité, puis Héberger (durée, seed) ou Rejoindre (IP).
     /// Affiché uniquement quand on n'est pas connecté.
     /// </summary>
     public class MenuUI : MonoBehaviour
     {
+        private const float ColumnWidth = 330f, Gap = 16f;
 
         private string _name, _port, _ip = "127.0.0.1", _customMinutes = "10", _seed = "";
         private int _durationChoice; // index dans les préréglages ; = longueur => personnalisé
@@ -29,59 +30,78 @@ namespace NuclearProtection.UI
             if (nm == null || Cm == null || Cm.Config == null || _name == null) return;
             if (nm.IsListening || nm.ShutdownInProgress) return;
 
-            GUI.matrix = Matrix4x4.Scale(Vector3.one * DisplayControl.UiScale);
-            GUILayout.BeginArea(new Rect(20, 20, 420, 660), GUI.skin.box);
-            GUILayout.Label("<b>NUCLEAR PROTECTION</b>", RichLabel());
+            UiTheme.Begin();
+            var size = UiTheme.Size;
+            UiTheme.DrawBackdrop();
 
-            GUILayout.Label("Ton nom :");
-            _name = GUILayout.TextField(_name, 20);
-            GUILayout.Label("Port UDP :");
-            _port = GUILayout.TextField(_port, 5);
+            float total = ColumnWidth * 2 + Gap;
+            float x = (size.x - total) / 2f, y = Mathf.Max(10f, size.y * 0.06f);
 
-            GUILayout.Space(10);
-            DrawHostSection();
-            GUILayout.Space(10);
-            DrawJoinSection();
+            GUI.Label(new Rect(0, y, size.x, 44), "NUCLEAR PROTECTION", UiTheme.Title);
+            GUI.Label(new Rect(0, y + 42, size.x, 22), UiTheme.Dim("POSTE DE COMMANDEMENT — DÉFENSE AÉRIENNE"), UiTheme.Center);
+            y += 76;
 
+            DrawIdentity(new Rect(x, y, total, 74));
+            y += 84;
+            float colHeight = Mathf.Max(220f, size.y - y - 60f);
+            DrawHostSection(new Rect(x, y, ColumnWidth, colHeight));
+            DrawJoinSection(new Rect(x + ColumnWidth + Gap, y, ColumnWidth, colHeight));
+
+            float bottom = y + colHeight + 8;
             if (!string.IsNullOrEmpty(Cm.LastError))
-                GUILayout.Label($"<color=#ff6060>{Cm.LastError}</color>", RichLabel());
-
-            GUILayout.Space(10);
-            if (GUILayout.Button(DisplayControl.IsFullscreen ? "Passer en fenêtre (F11)" : "Plein écran (F11)"))
+                GUI.Label(new Rect(x, bottom, total - 200, 40), UiTheme.Bad(Cm.LastError), UiTheme.Center);
+            if (GUI.Button(new Rect(x + total - 190, bottom, 190, 30), DisplayControl.IsFullscreen ? "Fenêtré (F11)" : "Plein écran (F11)"))
                 DisplayControl.ToggleFullscreen();
-            GUILayout.EndArea();
         }
 
-        private void DrawHostSection()
+        private void DrawIdentity(Rect r)
         {
-            GUILayout.Label("<b>Héberger</b>", RichLabel());
+            var inner = UiTheme.Panel(r);
+            float half = (inner.width - Gap) / 2f;
+            GUI.Label(new Rect(inner.x, inner.y, half, 20), UiTheme.Dim("INDICATIF (ton nom)"));
+            _name = GUI.TextField(new Rect(inner.x, inner.y + 22, half, 30), _name, 20);
+            GUI.Label(new Rect(inner.x + half + Gap, inner.y, half, 20), UiTheme.Dim("PORT UDP"));
+            _port = GUI.TextField(new Rect(inner.x + half + Gap, inner.y + 22, half, 30), _port, 5);
+        }
+
+        private void DrawHostSection(Rect r)
+        {
+            var inner = UiTheme.Panel(r, "» HÉBERGER");
+            GUILayout.BeginArea(inner);
+            GUILayout.Label(UiTheme.Dim("DURÉE DE LA PARTIE"));
             var presets = Cm.Config.duration.presetMinutes;
             var labels = new string[presets.Length + 1];
             for (int i = 0; i < presets.Length; i++) labels[i] = $"{presets[i]} min";
             labels[presets.Length] = "Perso";
-            _durationChoice = GUILayout.Toolbar(_durationChoice, labels);
+            _durationChoice = GUILayout.Toolbar(_durationChoice, labels, GUILayout.Height(30));
 
             if (_durationChoice == presets.Length)
             {
                 var d = Cm.Config.duration;
-                GUILayout.Label($"Durée perso ({d.customMinMinutes}-{d.customMaxMinutes} min) :");
+                GUILayout.Label(UiTheme.Dim($"MINUTES ({d.customMinMinutes}-{d.customMaxMinutes})"));
                 _customMinutes = GUILayout.TextField(_customMinutes, 3);
             }
 
-            GUILayout.Label("Seed (vide = aléatoire) :");
+            GUILayout.Label(UiTheme.Dim("SEED (vide = aléatoire)"));
             _seed = GUILayout.TextField(_seed, 11);
 
-            if (GUILayout.Button("Héberger") && TryParsePort(out var port))
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("CRÉER LA PARTIE", GUILayout.Height(38)) && TryParsePort(out var port))
                 Cm.Host(_name, port, SelectedMinutes(), int.TryParse(_seed, out var s) ? s : null);
+            GUILayout.EndArea();
         }
 
-        private void DrawJoinSection()
+        private void DrawJoinSection(Rect r)
         {
-            GUILayout.Label("<b>Rejoindre</b>", RichLabel());
-            GUILayout.Label("IP de l'hôte :");
+            var inner = UiTheme.Panel(r, "» REJOINDRE");
+            GUILayout.BeginArea(inner);
+            GUILayout.Label(UiTheme.Dim("IP DE L'HÔTE"));
             _ip = GUILayout.TextField(_ip, 15);
-            if (GUILayout.Button("Rejoindre") && TryParsePort(out var port))
+            GUILayout.Label("L'hôte voit ses adresses dans le lobby.", UiTheme.Small);
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("SE CONNECTER", GUILayout.Height(38)) && TryParsePort(out var port))
                 Cm.Join(_name, _ip, port);
+            GUILayout.EndArea();
         }
 
         private int SelectedMinutes()
@@ -98,7 +118,5 @@ namespace NuclearProtection.UI
             _port = port.ToString();
             return true; // Port invalide : on revient au port par défaut.
         }
-
-        private static GUIStyle RichLabel() => new(GUI.skin.label) { richText = true };
     }
 }

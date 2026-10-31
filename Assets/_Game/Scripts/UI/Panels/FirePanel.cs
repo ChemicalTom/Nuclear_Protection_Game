@@ -39,7 +39,7 @@ namespace NuclearProtection.UI.Panels
 
             float locked = (float)(fire.LockedUntil.Value - now);
             if (locked > 0f)
-                GUILayout.Label($"<color=#ff5050><b>PUPITRE BLOQUÉ : {Mathf.CeilToInt(locked)} s</b></color>", big);
+                GUILayout.Label(UiTheme.Bad($"<b>PUPITRE BLOQUÉ : {Mathf.CeilToInt(locked)} s</b>"), big);
             else
                 DrawCodeInput(fire);
 
@@ -74,6 +74,6 @@ namespace NuclearProtection.UI.Panels
             }
         }
 
-        private static string KeyText(bool turned) => turned ? "<color=#ffcc20>TOURNÉE</color>" : "en attente";
+        private static string KeyText(bool turned) => turned ? UiTheme.Warn("TOURNÉE") : "en attente";
     }
 }

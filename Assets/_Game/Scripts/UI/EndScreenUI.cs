@@ -30,43 +30,40 @@ namespace NuclearProtection.UI
         {
             if (!_shown) return;
             GUI.depth = -100; // au-dessus du HUD et des écrans de poste
-            GUI.matrix = Matrix4x4.Scale(Vector3.one * DisplayControl.UiScale);
-            float w = Screen.width / DisplayControl.UiScale, h = Screen.height / DisplayControl.UiScale;
-
-            var old = GUI.color;
-            GUI.color = new Color(0f, 0f, 0f, 0.92f);
-            GUI.DrawTexture(new Rect(0, 0, w, h), Texture2D.whiteTexture);
-            GUI.color = old;
+            UiTheme.Begin();
+            var size = UiTheme.Size;
+            float w = size.x, h = size.y;
+            UiTheme.DrawBackdrop();
 
             InitStyles();
             var d = ConnectionManager.Instance.Config.defeat;
             var result = MatchOutcome.Instance != null ? MatchOutcome.Instance.Result.Value : MatchResult.Defaite;
             bool victory = result == MatchResult.Victoire;
-            string color = victory ? "#60ff70" : "#ff4030";
 
-            var area = new Rect(w * 0.08f, 12, w * 0.84f, h - 24);
+            var area = UiTheme.Panel(new Rect(w * 0.06f, 10, w * 0.88f, h - 20), "RAPPORT DE MISSION");
             GUILayout.BeginArea(area);
-            GUILayout.Label($"<color={color}>{(victory ? d.victoryTitle : d.defeatTitle)}</color>", _title);
+            string title = victory ? d.victoryTitle : d.defeatTitle;
+            GUILayout.Label(victory ? UiTheme.Ok(title) : UiTheme.Bad(title), _title);
             var reason = MatchOutcome.Instance != null ? MatchOutcome.Instance.Reason.Value : DefeatReason.Aucune;
-            GUILayout.Label(victory ? d.victoryText : ReasonText(d, reason), _text);
+            GUILayout.Label(victory ? d.victoryText : ReasonText(d, reason), UiTheme.Center);
 
-            if (MatchOutcome.LocalSummary is MatchSummary m) DrawSummary(m);
-            else GUILayout.Label("Calcul du résumé…", _text);
+            if (MatchOutcome.LocalSummary is MatchSummary m) DrawSummary(m, area.width);
+            else GUILayout.Label(UiTheme.Dim("Calcul du résumé…"), UiTheme.Center);
 
             GUILayout.Space(8);
-            if (GUILayout.Button("Retour au menu", GUILayout.Height(34))) ConnectionManager.Instance.Leave();
+            if (GUILayout.Button("RETOUR AU MENU", GUILayout.Height(36))) ConnectionManager.Instance.Leave();
             GUILayout.EndArea();
         }
 
-        private void DrawSummary(MatchSummary m)
+        private void DrawSummary(MatchSummary m, float width)
         {
-            GUILayout.Label($"<color={GradeColor(m.Grade)}>Note : {m.Grade}</color>", _grade);
-            GUILayout.Label($"Score {m.Score} / {m.PerfectScore} possibles ({m.Percent:0} %)", _text);
+            GUILayout.Label(UiTheme.Paint($"NOTE : {m.Grade}", GradeColor(m.Grade)), _grade);
+            GUILayout.Label(UiTheme.Dim($"Score {m.Score} / {m.PerfectScore} possibles ({m.Percent:0} %)"), UiTheme.Center);
 
             _scroll = GUILayout.BeginScrollView(_scroll);
             GUILayout.BeginHorizontal();
 
-            GUILayout.BeginVertical(GUILayout.Width(Screen.width / DisplayControl.UiScale * 0.4f));
+            GUILayout.BeginVertical(GUILayout.Width(width * 0.45f));
             Section("AVIONS");
             Line($"Ennemis abattus : {m.EnemiesDowned}");
             Line($"Ennemis passés : {m.EnemiesPassed} sur {m.EnemiesPassedLimit} max");
@@ -91,7 +88,7 @@ namespace NuclearProtection.UI
             foreach (var o in m.Orders) if (o.IsTrue) trueCount++;
             Line($"Reçus : {m.Orders.Length} ({trueCount} vrais, {m.Orders.Length - trueCount} faux)");
             Line($"Vrais ordres ratés : {m.MissedTrueOrders} sur {m.MissedTrueOrdersLimit} max");
-            if (m.FalseLaunches > 0) Line($"<color=#ff4030>Lancements sans ordre valide : {m.FalseLaunches}</color>");
+            if (m.FalseLaunches > 0) Line(UiTheme.Bad($"Lancements sans ordre valide : {m.FalseLaunches}"));
             foreach (var o in m.Orders)
                 Line($"#{o.Id} à {Clock(o.Time)} — {(o.IsTrue ? "VRAI" : "FAUX")} : {VerdictText(o.Verdict)}");
             GUILayout.EndVertical();
@@ -110,10 +107,10 @@ namespace NuclearProtection.UI
 
         private void InitStyles()
         {
-            _title ??= new GUIStyle(GUI.skin.label) { fontSize = 40, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, richText = true };
-            _grade ??= new GUIStyle(GUI.skin.label) { fontSize = 30, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, richText = true };
-            _text ??= new GUIStyle(GUI.skin.label) { fontSize = 16, wordWrap = true, richText = true, alignment = TextAnchor.UpperLeft };
-            _section ??= new GUIStyle(GUI.skin.label) { fontSize = 17, fontStyle = FontStyle.Bold, normal = { textColor = new Color(1f, 0.8f, 0.3f) } };
+            _title ??= new GUIStyle(UiTheme.Title) { fontSize = UiTheme.S.fontSize * 2 + 14 };
+            _grade ??= new GUIStyle(UiTheme.Title) { fontSize = UiTheme.S.fontSize + 13 };
+            _text ??= new GUIStyle(GUI.skin.label) { wordWrap = true, alignment = TextAnchor.UpperLeft };
+            _section ??= UiTheme.NoHover(new GUIStyle(UiTheme.Header) { normal = { textColor = UiTheme.S.warning } });
         }
 
         private static string Clock(float seconds)
@@ -124,21 +121,22 @@ namespace NuclearProtection.UI
 
         private static string VerdictText(OrderVerdict v) => v switch
         {
-            OrderVerdict.BienLance => "<color=#60ff70>lancé ✔</color>",
-            OrderVerdict.Rate => "<color=#ff4030>raté ✘</color>",
-            OrderVerdict.BienIgnore => "<color=#60ff70>ignoré ✔</color>",
-            OrderVerdict.LanceSurFaux => "<color=#ff4030>lancé sur un faux ✘</color>",
-            _ => "<color=#a0a0a0>en cours à la fin (non noté)</color>"
+            OrderVerdict.BienLance => UiTheme.Ok("lancé ✔"),
+            OrderVerdict.Rate => UiTheme.Bad("raté ✘"),
+            OrderVerdict.BienIgnore => UiTheme.Ok("ignoré ✔"),
+            OrderVerdict.LanceSurFaux => UiTheme.Bad("lancé sur un faux ✘"),
+            _ => UiTheme.Dim("en cours à la fin (non noté)")
         };
 
-        private static string GradeColor(Grade g) => g switch
+        // S doré, puis du vert (A) vers le rouge (F) en passant par l'ambre.
+        private static Color GradeColor(Grade g) => g switch
         {
-            Grade.S => "#ffd700",
-            Grade.A => "#60ff70",
-            Grade.B => "#a0e060",
-            Grade.C => "#e0e060",
-            Grade.D => "#ff9040",
-            _ => "#ff4030"
+            Grade.S => new Color(1f, 0.84f, 0f),
+            Grade.A => UiTheme.S.accent,
+            Grade.B => Color.Lerp(UiTheme.S.accent, UiTheme.S.warning, 0.35f),
+            Grade.C => Color.Lerp(UiTheme.S.accent, UiTheme.S.warning, 0.7f),
+            Grade.D => UiTheme.S.warning,
+            _ => UiTheme.S.danger
         };
 
         private static string ReasonText(DefeatSettings d, DefeatReason reason) => reason switch

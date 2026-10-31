@@ -43,12 +43,12 @@ namespace NuclearProtection.UI.Panels
 
             if (!state.Blown)
             {
-                GUI.Label(new Rect(area.x, area.y, area.width, 30), "<color=#60ff70>Fusible en place. Tension normale.</color>", big);
+                GUI.Label(new Rect(area.x, area.y, area.width, 30), UiTheme.Ok("Fusible en place. Tension normale."), big);
                 _selectedWire = -1;
                 return;
             }
 
-            GUI.Label(new Rect(area.x, area.y, area.width, 30), "<color=#ff5040><b>FUSIBLE SAUTÉ</b></color> — remettez le courant.", big);
+            GUI.Label(new Rect(area.x, area.y, area.width, 30), UiTheme.Bad("<b>FUSIBLE SAUTÉ</b>") + " — remettez le courant.", big);
             var game = new Rect(area.x, area.y + 40, area.width, area.height - 40);
             if (state.Game == FuseMiniGame.Aiguille) DrawNeedle(fuse, state, game, big);
             else DrawWires(fuse, state, game, big);

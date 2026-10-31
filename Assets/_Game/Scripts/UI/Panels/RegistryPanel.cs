@@ -43,7 +43,7 @@ namespace NuclearProtection.UI.Panels
             {
                 string code = e.Code.ToString();
                 if (_search.Length > 0 && !code.Contains(_search)) continue;
-                string side = e.IsEnemy ? "<color=#ff5050>ENNEMI</color>" : "<color=#60ff70>AMI</color>";
+                string side = e.IsEnemy ? UiTheme.Bad("ENNEMI") : UiTheme.Ok("AMI");
                 GUILayout.Label($"{code}    {side}", rich);
             }
             GUILayout.EndScrollView();

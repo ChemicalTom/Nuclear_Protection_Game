@@ -24,6 +24,7 @@ namespace NuclearProtection.Config
         public DirectorSettings director = new();
         public DisplaySettings display = new();
         public VisualSettings visuals = new();
+        public UiSettings ui = new();
 
         // Appelé par Unity à chaque modification dans l'Inspector.
         private void OnValidate() => Sanitize();
