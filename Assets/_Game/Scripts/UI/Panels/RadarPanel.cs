@@ -20,7 +20,7 @@ namespace NuclearProtection.UI.Panels
         private static readonly Color PlaneColor = new(0.3f, 1f, 0.4f);
         private static readonly Color MissileColor = new(1f, 0.55f, 0.1f);
         private static readonly Color SelectedColor = Color.white;
-        private const float BlipSize = 10f;
+
 
         private int _selectedId = -1;
 
@@ -36,7 +36,7 @@ namespace NuclearProtection.UI.Panels
 
             float size = Mathf.Min(area.height, area.width * 0.62f);
             var scope = new Rect(area.x, area.y, size, size);
-            GUI.DrawTexture(scope, RadarTextures.Scope);
+            GUI.DrawTexture(scope, RadarTextures.Scope(ConnectionManager.Instance.Config.aircraft.radarRings));
 
             foreach (var c in mgr.Contacts) DrawBlip(c, scope, now);
             DrawInfo(new Rect(scope.xMax + 16, area.y, area.width - size - 16, area.height), mgr, now);
@@ -46,7 +46,8 @@ namespace NuclearProtection.UI.Panels
         {
             Vector2 p = c.ScreenPosAt(now);
             var center = scope.center + new Vector2(p.x, -p.y) * (scope.width / 2f);
-            var r = new Rect(center.x - BlipSize / 2, center.y - BlipSize / 2, BlipSize, BlipSize);
+            float blip = ConnectionManager.Instance.Config.aircraft.radarBlipSize;
+            var r = new Rect(center.x - blip / 2, center.y - blip / 2, blip, blip);
 
             var old = GUI.color;
             GUI.color = c.Id == _selectedId ? SelectedColor : c.Kind == ContactKind.Missile ? MissileColor : PlaneColor;
@@ -71,7 +72,7 @@ namespace NuclearProtection.UI.Panels
                 GUILayout.Label($"<b>Code de tir : {c.FireCode}</b>", Rich());
                 GUILayout.Label($"Cap d'origine : {Mathf.RoundToInt(c.AngleDeg):000}°");
                 GUILayout.Label($"Distance : {km:0} km");
-                GUILayout.Label($"Impact base dans : {c.EtaAt(now):0} s");
+                GUILayout.Label(c.PassesBy ? $"Passe à côté, sort du radar dans : {c.EtaAt(now):0} s" : $"Impact base dans : {c.EtaAt(now):0} s");
             }
             else GUILayout.Label("Clique sur un écho pour l'identifier.");
             GUILayout.EndArea();

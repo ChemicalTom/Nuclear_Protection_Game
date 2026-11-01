@@ -17,6 +17,16 @@ namespace NuclearProtection.Core
         UnBunkerCommun = 1
     }
 
+    /// <summary>Niveau de difficulté choisi par l'hôte dans le lobby (Perso = valeurs réglées à la main).</summary>
+    public enum DifficultyLevel : byte
+    {
+        Recrue = 0,
+        Normal = 1,
+        Difficile = 2,
+        Expert = 3,
+        Perso = 4
+    }
+
     /// <summary>Pénalité appliquée en cas d'erreur sur le code de tir.</summary>
     public enum FireCodePenaltyMode
     {

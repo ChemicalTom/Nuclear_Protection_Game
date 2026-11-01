@@ -10,6 +10,7 @@ namespace NuclearProtection.Config
     public class GameConfig : ScriptableObject
     {
         public MatchDurationSettings duration = new();
+        public DifficultySettings difficulty = new();
         public NetworkSettings network = new();
         public RoomSettings rooms = new();
         public PlayerControlSettings player = new();
@@ -26,6 +27,7 @@ namespace NuclearProtection.Config
         public VisualSettings visuals = new();
         public UiSettings ui = new();
         public AvatarSettings avatar = new();
+        public GuideSettings guide = new();
 
         // Appelé par Unity à chaque modification dans l'Inspector.
         private void OnValidate() => Sanitize();
@@ -33,8 +35,9 @@ namespace NuclearProtection.Config
         /// <summary>Corrige les bornes incohérentes (max inférieur au min, etc.).</summary>
         public void Sanitize()
         {
-            if (aircraft.spawnIntervalMax < aircraft.spawnIntervalMin)
-                aircraft.spawnIntervalMax = aircraft.spawnIntervalMin;
+            difficulty.Sanitize();
+            if (aircraft.sidePassMissMax < aircraft.sidePassMissMin)
+                aircraft.sidePassMissMax = aircraft.sidePassMissMin;
             if (calls.intervalMax < calls.intervalMin)
                 calls.intervalMax = calls.intervalMin;
             if (calls.forceCallAfter < calls.intervalMax)

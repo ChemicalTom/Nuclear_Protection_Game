@@ -38,6 +38,7 @@ namespace NuclearProtection.Aircraft
         private bool _lastWasEnemy;
 
         private AircraftSettings S => config.aircraft;
+        private static DifficultyValues D => MatchSession.Instance.CurrentDifficulty;
 
         private void Awake()
         {
@@ -73,10 +74,10 @@ namespace NuclearProtection.Aircraft
         {
             _rng = SeededRandom.Create(MatchSession.Instance.Seed.Value, SeededRandom.SaltRegistry);
             float durationSec = MatchSession.Instance.DurationMinutes.Value * 60f;
-            int planned = Mathf.CeilToInt(durationSec / S.spawnIntervalMin) + 1;
+            int planned = Mathf.CeilToInt(durationSec / D.spawnIntervalMin) + 1;
             var codes = AircraftCodeGenerator.GenerateUnique(planned + S.registryExtraCodes, S, _rng);
 
-            int friendlies = Mathf.RoundToInt(codes.Count * S.friendlyRatio);
+            int friendlies = Mathf.RoundToInt(codes.Count * D.friendlyRatio);
             var entries = new List<RegistryEntry>();
             for (int i = 0; i < codes.Count; i++)
                 entries.Add(new RegistryEntry { Code = new FixedString32Bytes(codes[i]), IsEnemy = i >= friendlies });
@@ -99,7 +100,7 @@ namespace NuclearProtection.Aircraft
             {
                 // Directeur : si aucun avion acceptable maintenant, on retente un peu plus tard.
                 _nextSpawnTime = SpawnAircraft(now)
-                    ? now + _rng.Range(S.spawnIntervalMin, S.spawnIntervalMax)
+                    ? now + _rng.Range(D.spawnIntervalMin, D.spawnIntervalMax)
                     : now + config.director.spawnRetryDelay;
             }
 
@@ -116,12 +117,32 @@ namespace NuclearProtection.Aircraft
             _sameSideStreak = entry.IsEnemy == _lastWasEnemy ? _sameSideStreak + 1 : 1;
             _lastWasEnemy = entry.IsEnemy;
 
-            var c = NewContact(ContactKind.Avion, entry.Code, _rng.Range(S.approachAngleMin, S.approachAngleMax), 1f, now, S.timeToReachBase);
+            float angle = _rng.Range(S.approachAngleMin, S.approachAngleMax);
+            Vector2 end = Vector2.zero;
+            float flight = D.timeToReachBase;
+            if (_rng.NextDouble() < D.sidePassChance) end = SidePassExit(angle, ref flight);
+
+            var c = NewContact(ContactKind.Avion, entry.Code, angle, 1f, now, flight, end);
             _sides[c.Id] = entry.IsEnemy;
 
-            if (entry.IsEnemy && _rng.NextDouble() < S.enemyMissileChance)
-                _missileFireTimes[c.Id] = now + S.timeToReachBase * _rng.Range(S.missileFireAtMin, S.missileFireAtMax);
+            // Un ennemi peut tirer, même s'il passe sur le côté.
+            if (entry.IsEnemy && _rng.NextDouble() < D.enemyMissileChance)
+                _missileFireTimes[c.Id] = now + flight * _rng.Range(S.missileFireAtMin, S.missileFireAtMax);
             return true;
+        }
+
+        /// <summary>
+        /// Trajectoire qui frôle la base : corde du cercle radar passant à une distance tirée au hasard du centre.
+        /// Renvoie le point de sortie ; la durée du vol est allongée selon la longueur de la corde (vitesse constante).
+        /// </summary>
+        private Vector2 SidePassExit(float entryAngle, ref float flight)
+        {
+            float miss = _rng.Range(S.sidePassMissMin, S.sidePassMissMax);
+            float side = _rng.Next(2) == 0 ? -1f : 1f;
+            // Le point le plus proche de la base est décalé de acos(miss) par rapport à l'entrée ; la sortie lui est symétrique.
+            Vector2 closest = RadarContact.Direction(entryAngle + side * Mathf.Acos(miss) * Mathf.Rad2Deg) * miss;
+            flight *= 2f * Mathf.Sqrt(1f - miss * miss);
+            return 2f * closest - RadarContact.Direction(entryAngle);
         }
 
         /// <summary>
@@ -135,7 +156,7 @@ namespace NuclearProtection.Aircraft
             int pick = _rng.Next(_unflown.Count);
 
             bool? forceEnemy = null;
-            if (EnemiesInFlight() >= d.maxSimultaneousEnemies) forceEnemy = false;
+            if (EnemiesInFlight() >= D.maxSimultaneousEnemies) forceEnemy = false;
             else if (_sameSideStreak >= d.maxConsecutiveSameSide) forceEnemy = !_lastWasEnemy;
             if (forceEnemy == null || _unflown[pick].IsEnemy == forceEnemy) return pick;
 
@@ -145,7 +166,7 @@ namespace NuclearProtection.Aircraft
                 int i = (pick + k) % _unflown.Count;
                 if (_unflown[i].IsEnemy == forceEnemy) return i;
             }
-            return forceEnemy == false && EnemiesInFlight() >= d.maxSimultaneousEnemies ? -1 : pick;
+            return forceEnemy == false && EnemiesInFlight() >= D.maxSimultaneousEnemies ? -1 : pick;
         }
 
         private int EnemiesInFlight()
@@ -163,8 +184,10 @@ namespace NuclearProtection.Aircraft
                 if (!_missileFireTimes.TryGetValue(plane.Id, out double t) || now < t) continue;
                 _missileFireTimes.Remove(plane.Id);
 
-                float d = plane.DistanceAt(now);
-                var m = NewContact(ContactKind.Missile, default, plane.AngleDeg, d, now, S.enemyMissileFlightTime * d);
+                // Le missile part de la position actuelle de l'avion, droit sur la base.
+                Vector2 p = plane.ScreenPosAt(now);
+                float d = p.magnitude, bearing = Mathf.Atan2(p.x, p.y) * Mathf.Rad2Deg;
+                var m = NewContact(ContactKind.Missile, default, (bearing + 360f) % 360f, d, now, D.enemyMissileFlightTime * d, Vector2.zero);
                 _sides[m.Id] = true;
             }
         }
@@ -177,12 +200,18 @@ namespace NuclearProtection.Aircraft
                 if (c.EtaAt(now) > 0f) continue;
                 bool enemy = _sides[c.Id];
                 RemoveAt(i);
+                if (c.PassesBy)
+                {
+                    // Passé sur le côté : il sort du radar sans rien toucher.
+                    SpoilerLog.Log($"[Avions] {c.Code} sorti du radar sur le côté ({(enemy ? "ennemi" : "ami")}).");
+                    continue;
+                }
                 SpoilerLog.Log($"[Avions] {c.Kind} {c.Code} arrivé sur la base ({(enemy ? "ENNEMI PASSÉ" : "ami")}).");
                 ServerContactReachedBase?.Invoke(c, enemy);
             }
         }
 
-        private RadarContact NewContact(ContactKind kind, FixedString32Bytes code, float angle, float startDist, double now, float flight)
+        private RadarContact NewContact(ContactKind kind, FixedString32Bytes code, float angle, float startDist, double now, float flight, Vector2 end)
         {
             // Code de tir unique parmi les contacts en vol (le pupitre vise avec ce seul code).
             var inUse = new HashSet<string>();
@@ -192,7 +221,7 @@ namespace NuclearProtection.Aircraft
             var c = new RadarContact
             {
                 Id = _nextId++, Kind = kind, Code = code, FireCode = new FixedString32Bytes(fireCode), AngleDeg = angle % 360f,
-                StartDistance = startDist, StartTime = now, FlightTime = Mathf.Max(0.1f, flight)
+                StartDistance = startDist, EndPos = end, StartTime = now, FlightTime = Mathf.Max(0.1f, flight)
             };
             Contacts.Add(c);
             return c;

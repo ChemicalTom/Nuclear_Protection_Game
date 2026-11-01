@@ -31,8 +31,9 @@ namespace NuclearProtection.Config
         public AnimationCurve minNuclearOrdersByMinutes = AnimationCurve.Linear(7f, 2f, 15f, 4f);
 
         [Header("Ordres nucléaires")]
-        [Tooltip("Probabilité qu'un ordre soit vrai.")]
-        [Range(0f, 1f)] public float trueOrderRatio = 0.5f;
+        // La probabilité qu'un ordre soit vrai dépend de la difficulté (DifficultyValues.trueOrderRatio).
+        [Tooltip("Faux ordres même avec un seul téléphone (bunker commun à 2). Décoché : impossible de comparer, tous les ordres sont vrais.")]
+        public bool falseOrdersWithSharedPhone = false;
 
         [Tooltip("Écart min entre les 2 appels d'un vrai ordre (s).")]
         [Min(0f)] public float trueOrderSecondCallMin = 3f;

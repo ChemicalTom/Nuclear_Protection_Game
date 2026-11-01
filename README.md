@@ -29,3 +29,9 @@ Un joueur **héberge** (serveur + joueur), les autres **rejoignent** par IP. Por
 
 ## Réglages
 Tout est dans `Assets/_Game/Config/GameConfig.asset` (port, durées, nombre de joueurs, etc.).
+
+## Difficulté et guide
+- **Difficulté** : l'hôte la choisit dans le lobby (Recrue, Normal, Difficile, Expert, ou Perso avec des curseurs).
+  Les préréglages et les limites des curseurs sont dans `GameConfig.asset > difficulty`.
+- **Guide du jeu** : bouton « GUIDE DU JEU » en bas à gauche du menu principal. Le texte est dans `GameConfig.asset > guide`.
+- À 2 joueurs (un seul téléphone), il n'y a jamais de faux ordre (`calls > falseOrdersWithSharedPhone` pour le réactiver).

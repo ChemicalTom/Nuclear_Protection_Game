@@ -3,7 +3,10 @@ using UnityEngine;
 
 namespace NuclearProtection.Config
 {
-    /// <summary>Apparition des avions, radar, registre et format des codes d'identification.</summary>
+    /// <summary>
+    /// Apparition des avions, radar, registre et format des codes d'identification.
+    /// Le rythme, la vitesse, les missiles et la part d'amis dépendent de la difficulté (DifficultySettings).
+    /// </summary>
     [Serializable]
     public class AircraftSettings
     {
@@ -11,37 +14,27 @@ namespace NuclearProtection.Config
         [Tooltip("Délai avant le tout premier avion (s).")]
         [Min(0f)] public float firstAircraftDelay = 8f;
 
-        [Tooltip("Délai minimum entre deux avions (s).")]
-        [Min(1f)] public float spawnIntervalMin = 10f;
-
-        [Tooltip("Délai maximum entre deux avions (s).")]
-        [Min(1f)] public float spawnIntervalMax = 25f;
-
-        [Tooltip("Proportion d'avions amis (0 = tous ennemis, 1 = tous amis).")]
-        [Range(0f, 1f)] public float friendlyRatio = 0.4f;
-
         [Header("Trajectoire")]
-        [Tooltip("Temps entre l'apparition au bord du radar et l'arrivée sur la base (s).")]
-        [Min(5f)] public float timeToReachBase = 45f;
-
         [Tooltip("Arc d'approche (degrés, 0 = nord, sens horaire). 0 à 360 = toutes directions.")]
         [Range(0f, 360f)] public float approachAngleMin = 0f;
         [Range(0f, 360f)] public float approachAngleMax = 360f;
 
-        [Header("Missiles ennemis")]
-        [Tooltip("Probabilité qu'un avion ennemi tire un missile vers la base.")]
-        [Range(0f, 1f)] public float enemyMissileChance = 0.25f;
+        [Tooltip("Avion qui passe sur le côté : distance minimale / maximale à la base au plus près (0 = base, 1 = bord du radar).")]
+        [Range(0.05f, 0.95f)] public float sidePassMissMin = 0.3f;
+        [Range(0.05f, 0.95f)] public float sidePassMissMax = 0.8f;
 
+        [Header("Missiles ennemis")]
         [Tooltip("Moment du tir, en fraction du trajet de l'avion (min/max).")]
         [Range(0.05f, 0.95f)] public float missileFireAtMin = 0.3f;
         [Range(0.05f, 0.95f)] public float missileFireAtMax = 0.6f;
 
-        [Tooltip("Temps de vol d'un missile ennemi depuis le bord du radar jusqu'à la base (s).")]
-        [Min(3f)] public float enemyMissileFlightTime = 20f;
-
         [Header("Radar")]
         [Tooltip("Portée affichée sur l'écran radar (km).")]
-        [Min(1f)] public float radarRangeKm = 120f;
+        [Min(1f)] public float radarRangeKm = 240f;
+        [Tooltip("Nombre de cercles de distance sur l'écran radar.")]
+        [Min(1)] public int radarRings = 6;
+        [Tooltip("Taille d'un écho sur l'écran radar (pixels).")]
+        [Min(2f)] public float radarBlipSize = 7f;
 
         [Header("Registre")]
         [Tooltip("Codes leurres en plus des avions prévus (le registre contient plus de codes que d'avions).")]

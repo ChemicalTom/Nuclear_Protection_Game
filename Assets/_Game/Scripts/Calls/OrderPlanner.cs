@@ -21,7 +21,10 @@ namespace NuclearProtection.Calls
     /// </summary>
     public static class OrderPlanner
     {
-        public static List<PlannedOrder> Plan(CallSettings s, DirectorSettings director, float durationSec, System.Random rng)
+        /// <param name="trueOrderRatio">Probabilité qu'un ordre soit vrai (selon la difficulté).</param>
+        /// <param name="allowFalseOrders">Faux : tous les ordres sont vrais (un seul téléphone, impossible de comparer).</param>
+        public static List<PlannedOrder> Plan(CallSettings s, DirectorSettings director, float durationSec, System.Random rng,
+            float trueOrderRatio, bool allowFalseOrders)
         {
             var times = PlanTimes(s, durationSec, rng);
             var orders = new List<PlannedOrder>(times.Count);
@@ -30,12 +33,12 @@ namespace NuclearProtection.Calls
                 orders.Add(new PlannedOrder
                 {
                     Time = t,
-                    IsTrue = rng.NextDouble() < s.trueOrderRatio,
+                    IsTrue = rng.NextDouble() < trueOrderRatio || !allowFalseOrders, // on tire toujours : même suite de hasard pour une seed
                     FirstTeam = rng.Next(2) == 0 ? TeamId.Radar : TeamId.Tir,
                     SecondCallDelay = rng.Range(s.trueOrderSecondCallMin, s.trueOrderSecondCallMax)
                 });
             }
-            ApplyStreakLimits(orders, director);
+            ApplyStreakLimits(orders, director, allowFalseOrders);
             return orders;
         }
 
@@ -43,7 +46,7 @@ namespace NuclearProtection.Calls
         /// Directeur : le hasard décide, mais on casse les séries trop longues
         /// (trop d'ordres vrais ou faux d'affilée, toujours la même équipe appelée en premier).
         /// </summary>
-        private static void ApplyStreakLimits(List<PlannedOrder> orders, DirectorSettings d)
+        private static void ApplyStreakLimits(List<PlannedOrder> orders, DirectorSettings d, bool allowFalseOrders)
         {
             int sameTruth = 0, sameTeam = 0;
             for (int i = 0; i < orders.Count; i++)
@@ -53,7 +56,7 @@ namespace NuclearProtection.Calls
                 {
                     var prev = orders[i - 1];
                     int truthLimit = prev.IsTrue ? d.maxConsecutiveTrueOrders : d.maxConsecutiveFalseOrders;
-                    if (o.IsTrue == prev.IsTrue && sameTruth >= truthLimit) o.IsTrue = !o.IsTrue;
+                    if (allowFalseOrders && o.IsTrue == prev.IsTrue && sameTruth >= truthLimit) o.IsTrue = !o.IsTrue;
                     if (o.FirstTeam == prev.FirstTeam && sameTeam >= d.maxSameTeamCalledFirst)
                         o.FirstTeam = o.FirstTeam == TeamId.Radar ? TeamId.Tir : TeamId.Radar;
 

@@ -15,8 +15,7 @@ namespace NuclearProtection.Config
         [Header("Pénalité d'erreur (code bien formé mais ne correspondant à aucun contact)")]
         public FireCodePenaltyMode penaltyMode = FireCodePenaltyMode.Cooldown;
 
-        [Tooltip("Blocage du pupitre après chaque mauvais code (s). Modes Cooldown et LesDeux.")]
-        [Min(0f)] public float wrongCodeCooldown = 5f;
+        // Blocage après chaque mauvais code (modes Cooldown et LesDeux) : réglé par la difficulté.
 
         [Tooltip("Erreurs consécutives tolérées avant le gros blocage. Modes LimiteEssais et LesDeux.")]
         [Min(1)] public int maxConsecutiveErrors = 3;
@@ -30,5 +29,13 @@ namespace NuclearProtection.Config
 
         [Tooltip("Couleur d'une clé de tir déjà tournée.")]
         public Color keyTurnedColor = new(0.2f, 1f, 0.3f);
+
+        [Header("Bruit d'une cible abattue (entendu par tous)")]
+        [Tooltip("Son à jouer à la place de l'explosion générée (facultatif).")]
+        public AudioClip shotDownClipOverride;
+        [Range(0f, 1f)] public float shotDownVolume = 0.8f;
+        [Min(0.2f)] public float shotDownDuration = 1.8f;
+        [Tooltip("Hauteur du son pour un missile abattu (1 = comme un avion ; plus haut = plus sec).")]
+        [Range(0.5f, 2f)] public float missileShotDownPitch = 1.35f;
     }
 }

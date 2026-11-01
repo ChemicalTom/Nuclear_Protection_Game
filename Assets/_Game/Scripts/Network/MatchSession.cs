@@ -22,6 +22,15 @@ namespace NuclearProtection.Network
         public readonly NetworkVariable<bool> HasStarted = new();
         public readonly NetworkVariable<BunkerLayout> Layout = new();
 
+        /// <summary>Difficulté choisie par l'hôte dans le lobby, et valeurs du mode Perso.</summary>
+        public readonly NetworkVariable<DifficultyLevel> Difficulty = new();
+        public readonly NetworkVariable<DifficultyValues> CustomDifficulty = new();
+
+        /// <summary>Valeurs en vigueur pour la difficulté choisie.</summary>
+        public DifficultyValues CurrentDifficulty => Difficulty.Value == DifficultyLevel.Perso
+            ? CustomDifficulty.Value
+            : Config.difficulty.ValuesFor(Difficulty.Value);
+
         /// <summary>Identifiant unique de cette partie (canal vocal propre, même si deux groupes jouent la même seed).</summary>
         public readonly NetworkVariable<FixedString64Bytes> SessionId = new();
 
@@ -47,6 +56,8 @@ namespace NuclearProtection.Network
             DurationMinutes.Value = _initDuration;
             Seed.Value = _initSeed;
             SessionId.Value = System.Guid.NewGuid().ToString("N");
+            Difficulty.Value = Config.difficulty.defaultLevel;
+            CustomDifficulty.Value = Config.difficulty.ValuesFor(DifficultyLevel.Perso);
 
             NetworkManager.OnClientConnectedCallback += AddPlayer;
             NetworkManager.OnClientDisconnectCallback += RemovePlayer;
@@ -89,6 +100,19 @@ namespace NuclearProtection.Network
             Layout.Value = TeamRules.LayoutFor(Players.Count, Config.network);
             HasStarted.Value = true;
             NetworkManager.SceneManager.LoadScene(Config.network.gameSceneName, LoadSceneMode.Single);
+        }
+
+        /// <summary>Hôte, dans le lobby : change le niveau de difficulté.</summary>
+        public void ServerSetDifficulty(DifficultyLevel level)
+        {
+            if (IsServer && !HasStarted.Value) Difficulty.Value = level;
+        }
+
+        /// <summary>Hôte, dans le lobby : règle les valeurs du mode Perso (ramenées dans les bornes).</summary>
+        public void ServerSetCustomDifficulty(DifficultyValues values)
+        {
+            var d = Config.difficulty;
+            if (IsServer && !HasStarted.Value) CustomDifficulty.Value = values.Clamped(d.customMin, d.customMax);
         }
 
         // ---------- Demandes des clients ----------

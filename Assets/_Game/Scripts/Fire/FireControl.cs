@@ -26,6 +26,9 @@ namespace NuclearProtection.Fire
         /// <summary>Serveur : un contact a été abattu par notre missile (wasEnemy = false → ami abattu).</summary>
         public static event Action<RadarContact, bool> ServerShotDown;
 
+        /// <summary>Tous les clients : une cible vient d'être abattue (pour le bruit d'explosion).</summary>
+        public static event Action<ContactKind> LocalShotDown;
+
         // ---- État visible par tous (affiché au pupitre et sur les clés) ----
         public readonly NetworkVariable<FixedString32Bytes> ArmedCode = new();   // vide = pas armé
         public readonly NetworkVariable<bool> Key1Turned = new();
@@ -47,6 +50,7 @@ namespace NuclearProtection.Fire
         public override void OnNetworkSpawn()
         {
             Instance = this;
+            if (!TryGetComponent<ShotDownSound>(out _)) gameObject.AddComponent<ShotDownSound>();
             if (IsServer)
             {
                 StationRegistry.ServerInteracted += OnServerStationInteracted;
@@ -101,7 +105,7 @@ namespace NuclearProtection.Fire
         {
             _consecutiveErrors++;
             var mode = S.penaltyMode;
-            float lockFor = mode != FireCodePenaltyMode.LimiteEssais ? S.wrongCodeCooldown : 0f;
+            float lockFor = mode != FireCodePenaltyMode.LimiteEssais ? MatchSession.Instance.CurrentDifficulty.wrongCodeCooldown : 0f;
 
             if (mode != FireCodePenaltyMode.Cooldown && _consecutiveErrors >= S.maxConsecutiveErrors)
             {
@@ -202,10 +206,18 @@ namespace NuclearProtection.Fire
                     SetStatus($"Cible {m.FireCode} détruite.");
                     SpoilerLog.Log($"[Tir] {contact.Kind} {contact.Code} abattu ({(wasEnemy ? "ennemi" : "AMI")}).");
                     ServerShotDown?.Invoke(contact, wasEnemy);
+                    ShotDownRpc(contact.Kind);
                 }
                 else SetStatus($"Missile sur {m.FireCode} : cible déjà disparue, raté.");
             }
         }
+
+        /// <summary>Test (hôte) : fait entendre l'explosion à tous sans tirer.</summary>
+        public void ServerTestShotDown(ContactKind kind) => ShotDownRpc(kind);
+
+        // Tout le monde entend l'explosion (le camp de la cible n'est pas envoyé).
+        [Rpc(SendTo.ClientsAndHost)]
+        private void ShotDownRpc(ContactKind kind) => LocalShotDown?.Invoke(kind);
 
         // ---------- Utilitaires serveur ----------
 

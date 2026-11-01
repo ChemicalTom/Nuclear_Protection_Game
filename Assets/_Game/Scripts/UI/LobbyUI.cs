@@ -53,7 +53,11 @@ namespace NuclearProtection.UI
             GUILayout.EndArea();
             y += infoHeight + 10;
 
-            float colWidth = (Width - Gap) / 2f, colHeight = Mathf.Clamp(size.y - y - 110f, 140f, 260f);
+            float diffHeight = DifficultyLobbyPanel.Height(nm.IsHost, session.Difficulty.Value);
+            DifficultyLobbyPanel.Draw(new Rect(x, y, Width, diffHeight), session, nm.IsHost);
+            y += diffHeight + 10;
+
+            float colWidth = (Width - Gap) / 2f, colHeight = Mathf.Clamp(size.y - y - 110f, 120f, 260f);
             DrawTeam(new Rect(x, y, colWidth, colHeight), TeamId.Radar, players, nm.LocalClientId, session);
             DrawTeam(new Rect(x + colWidth + Gap, y, colWidth, colHeight), TeamId.Tir, players, nm.LocalClientId, session);
             y += colHeight + 10;

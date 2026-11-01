@@ -15,9 +15,7 @@ namespace NuclearProtection.Config
 
         [Tooltip("Nombre max de fois d'affilée où la même équipe est appelée en premier.")]
         [Min(1)] public int maxSameTeamCalledFirst = 2;
-
-        [Tooltip("Nombre max d'ennemis présents en même temps sur le radar.")]
-        [Min(1)] public int maxSimultaneousEnemies = 4;
+        // Le nombre max d'ennemis simultanés dépend de la difficulté (DifficultyValues).
 
         [Tooltip("Nombre max d'avions du même camp d'affilée.")]
         [Min(1)] public int maxConsecutiveSameSide = 4;

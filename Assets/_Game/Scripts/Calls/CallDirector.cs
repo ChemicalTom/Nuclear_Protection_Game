@@ -72,7 +72,10 @@ namespace NuclearProtection.Calls
         private void BuildPlan()
         {
             int seed = MatchSession.Instance.Seed.Value;
-            _plan = OrderPlanner.Plan(S, ConnectionManager.Instance.Config.director, Clock.DurationSeconds, SeededRandom.Create(seed, SeededRandom.SaltOrders));
+            // Un seul téléphone (bunker commun) : impossible de comparer les appels, donc pas de faux ordre.
+            bool allowFalse = !PhoneSystem.SharedPhone || S.falseOrdersWithSharedPhone;
+            _plan = OrderPlanner.Plan(S, ConnectionManager.Instance.Config.director, Clock.DurationSeconds, SeededRandom.Create(seed, SeededRandom.SaltOrders),
+                MatchSession.Instance.CurrentDifficulty.trueOrderRatio, allowFalse);
             _sanctionRng = SeededRandom.Create(seed, SeededRandom.SaltSanctions);
             _blackoutRng = SeededRandom.Create(seed, SeededRandom.SaltBlackoutOrders);
             SpoilerLog.Log($"[Appels] {_plan.Count} ordres prévus pour cette partie.");

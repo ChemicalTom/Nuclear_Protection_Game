@@ -14,6 +14,14 @@ namespace NuclearProtection.UI
 
         private string _name, _port, _ip = "127.0.0.1", _customMinutes = "10", _seed = "";
         private int _durationChoice; // index dans les préréglages ; = longueur => personnalisé
+        private readonly GuideWindow _guide = new();
+
+        /// <summary>Ouvre le guide sur une page (bouton du menu, tests).</summary>
+        public void OpenGuide(int page = 0)
+        {
+            _guide.Page = page;
+            _guide.IsOpen = true;
+        }
 
         private ConnectionManager Cm => ConnectionManager.Instance;
 
@@ -33,6 +41,7 @@ namespace NuclearProtection.UI
             UiTheme.Begin();
             var size = UiTheme.Size;
             UiTheme.DrawBackdrop();
+            if (_guide.IsOpen) { _guide.Draw(Cm.Config.guide); return; }
 
             float total = ColumnWidth * 2 + Gap;
             float x = (size.x - total) / 2f, y = Mathf.Max(10f, size.y * 0.06f);
@@ -48,8 +57,9 @@ namespace NuclearProtection.UI
             DrawJoinSection(new Rect(x + ColumnWidth + Gap, y, ColumnWidth, colHeight));
 
             float bottom = y + colHeight + 8;
+            if (GUI.Button(new Rect(x, bottom, 190, 30), Cm.Config.guide.buttonLabel)) OpenGuide();
             if (!string.IsNullOrEmpty(Cm.LastError))
-                GUI.Label(new Rect(x, bottom, total - 200, 40), UiTheme.Bad(Cm.LastError), UiTheme.Center);
+                GUI.Label(new Rect(x + 200, bottom, total - 400, 40), UiTheme.Bad(Cm.LastError), UiTheme.Center);
             if (GUI.Button(new Rect(x + total - 190, bottom, 190, 30), DisplayControl.IsFullscreen ? "Fenêtré (F11)" : "Plein écran (F11)"))
                 DisplayControl.ToggleFullscreen();
         }

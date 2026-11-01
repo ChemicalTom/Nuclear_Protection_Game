@@ -89,6 +89,15 @@ namespace NuclearProtection.UI
             _skin.verticalScrollbarUpButton = _skin.verticalScrollbarDownButton = GUIStyle.none;
             _skin.horizontalScrollbarLeftButton = _skin.horizontalScrollbarRightButton = GUIStyle.none;
 
+            // Curseurs (mode de difficulté Perso).
+            Style(_skin.horizontalSlider, s.text, Framed(s.field, s.border));
+            _skin.horizontalSlider.fixedHeight = 8;
+            _skin.horizontalSlider.margin = new RectOffset(4, 4, 8, 4);
+            Style(_skin.horizontalSliderThumb, s.text, Framed(s.buttonActive, s.accent));
+            _skin.horizontalSliderThumb.hover.background = _skin.horizontalSliderThumb.active.background = Framed(s.accent, s.accent);
+            _skin.horizontalSliderThumb.fixedHeight = 16;
+            _skin.horizontalSliderThumb.fixedWidth = 12;
+
             PanelStyle = new GUIStyle(_skin.box) { normal = { background = Framed(s.panel, s.border, 2) }, border = new RectOffset(3, 3, 3, 3) };
             TitleBarStyle = new GUIStyle(_skin.box) { normal = { background = Framed(s.titleBar, s.border, 2) }, border = new RectOffset(3, 3, 3, 3) };
             Backdrop = new GUIStyle { normal = { background = Flat(s.backdrop) } };
