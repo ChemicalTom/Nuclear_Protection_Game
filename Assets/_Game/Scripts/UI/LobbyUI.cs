@@ -14,7 +14,11 @@ namespace NuclearProtection.UI
     {
         private const float Width = 680f, Gap = 16f;
 
+        private const float ScrollBarWidth = 20f;
+
         private List<string> _ips;
+        private Vector2 _scroll;
+        private float _contentHeight; // hauteur du lobby mesurée à la frame précédente
 
         private void OnGUI()
         {
@@ -37,7 +41,14 @@ namespace NuclearProtection.UI
         {
             UiTheme.DrawBackdrop();
             var size = UiTheme.Size;
-            float x = (size.x - Width) / 2f, y = Mathf.Max(10f, size.y * 0.05f);
+
+            // Défilement si le lobby dépasse l'écran (ex. curseurs du mode Perso sur un petit écran).
+            bool scroll = _contentHeight > size.y;
+            float viewWidth = scroll ? size.x - ScrollBarWidth : size.x;
+            if (scroll) _scroll = GUI.BeginScrollView(new Rect(0, 0, size.x, size.y), _scroll, new Rect(0, 0, viewWidth, _contentHeight));
+            else _scroll = Vector2.zero;
+
+            float x = (viewWidth - Width) / 2f, y = Mathf.Max(10f, size.y * 0.05f);
 
             GUI.Label(new Rect(0, y, size.x, 44), "SALLE DE BRIEFING", UiTheme.Title);
             y += 52;
@@ -73,6 +84,9 @@ namespace NuclearProtection.UI
             else GUI.Label(new Rect(x, y, Width - 130, 40), UiTheme.Dim("En attente du lancement par l'hôte…"), UiTheme.Center);
 
             if (GUI.Button(new Rect(x + Width - 120, y, 120, 40), "Quitter")) ConnectionManager.Instance.Leave();
+
+            _contentHeight = y + 90f; // boutons + message de blocage + marge
+            if (scroll) GUI.EndScrollView();
         }
 
         private static string LayoutText(BunkerLayout layout) => layout == BunkerLayout.UnBunkerCommun

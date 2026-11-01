@@ -19,7 +19,7 @@ namespace NuclearProtection.UI
 
         /// <summary>Hauteur du panneau selon ce qui est affiché.</summary>
         public static float Height(bool isHost, DifficultyLevel level) =>
-            (isHost ? 100f : 82f) + (isHost && level == DifficultyLevel.Perso ? RowHeight * 5 + 4 : 22f);
+            (isHost ? 100f : 82f) + (isHost && level == DifficultyLevel.Perso ? RowHeight * 5 + 4 : 44f); // résumé sur 2 lignes
 
         public static void Draw(Rect r, MatchSession session, bool isHost)
         {
